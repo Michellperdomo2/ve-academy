@@ -1,0 +1,131 @@
+/* =========================================================================
+   V&E Academy — sistema visual
+   Motivo: el cuaderno doble línea de primer grado (renglón celeste, margen rojo).
+   Tipografías: Andika (SIL, diseñada para lectores principiantes) + Fredoka (títulos).
+   ========================================================================= */
+
+:root {
+  --ink: #1f2a44;          /* tinta azul marino */
+  --ink-soft: #4a5675;
+  --paper: #f7fbff;        /* hoja de cuaderno */
+  --surface: #ffffff;
+  --rule: #9cc3e6;         /* renglón celeste */
+  --rule-faint: #d8e8f6;
+  --margin: #e5484d;       /* margen rojo */
+  --sun: #ffc93c;          /* girasol: puntos y estrellas */
+  --sun-deep: #e0a400;
+  --leaf: #2bb673;         /* acierto */
+  --leaf-soft: #dff6ea;
+  --grape: #6c4fd1;        /* marca V&E */
+  --grape-soft: #ece7fb;
+  --coral-soft: #fde4e4;
+  --line: #dfe6ef;
+
+  --font-read: 'Andika', 'Trebuchet MS', sans-serif;
+  --font-display: 'Fredoka', 'Andika', sans-serif;
+
+  --r-sm: 10px;
+  --r-md: 18px;
+  --r-lg: 28px;
+  --shadow-pressed: 0 4px 0 rgba(31, 42, 68, 0.18);
+  --focus: 0 0 0 4px rgba(108, 79, 209, 0.35);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  font-family: var(--font-read);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height: 1.15; margin: 0 0 0.5em; }
+h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.2rem; }
+p { margin: 0 0 0.8em; }
+a { color: var(--grape); }
+img { max-width: 100%; }
+:focus-visible { outline: none; box-shadow: var(--focus); border-radius: 8px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5em;
+  min-height: 44px; padding: 0.55em 1.2em; border-radius: 999px; border: 2px solid transparent;
+  font: 600 1rem var(--font-display); cursor: pointer; text-decoration: none; white-space: nowrap;
+  background: var(--grape); color: #fff; transition: transform 0.08s ease, background 0.15s ease;
+  &:hover { background: #5a3fbd; }
+  &:active { transform: translateY(2px); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); &:hover { background: var(--grape-soft); } }
+.btn-danger { background: var(--margin); &:hover { background: #c93338; } }
+.btn-sun { background: var(--sun); color: var(--ink); &:hover { background: #ffbb0d; } }
+.btn-sm { min-height: 36px; padding: 0.3em 0.9em; font-size: 0.9rem; }
+.icon-btn {
+  display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+  border: 2px solid var(--line); background: var(--surface); cursor: pointer; font-size: 1.3rem;
+}
+
+/* ---------- Formularios (adultos) ---------- */
+.form { display: grid; gap: 1rem; }
+.form-row { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.field { display: grid; gap: 0.3rem; }
+.field label { font-weight: 700; font-size: 0.92rem; }
+.field input, .field select, .field textarea {
+  font: inherit; color: inherit; padding: 0.65em 0.8em; border: 2px solid var(--line); border-radius: var(--r-sm);
+  background: var(--surface); width: 100%;
+  &:focus { border-color: var(--grape); outline: none; }
+}
+.field textarea { min-height: 90px; resize: vertical; }
+.field .hint { font-size: 0.85rem; color: var(--ink-soft); }
+.field .error { font-size: 0.85rem; color: var(--margin); }
+.check { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.95rem; input { width: 20px; height: 20px; margin-top: 3px; } }
+.alert { padding: 0.8rem 1rem; border-radius: var(--r-sm); background: var(--coral-soft); color: #8a1f23; }
+.alert-info { background: var(--grape-soft); color: #3a2a7a; }
+.alert-ok { background: var(--leaf-soft); color: #13603b; }
+
+/* ---------- Tablas y paneles (adultos) ---------- */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1.25rem; }
+.table-wrap { overflow-x: auto; }
+table.data { width: 100%; border-collapse: collapse; font-size: 0.95rem;
+  th { text-align: left; font-weight: 700; color: var(--ink-soft); padding: 0.6rem; border-bottom: 2px solid var(--line); white-space: nowrap; }
+  td { padding: 0.6rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  tr:last-child td { border-bottom: 0; }
+}
+.chip { display: inline-block; padding: 0.15em 0.65em; border-radius: 999px; font-size: 0.82rem; font-weight: 700; background: var(--grape-soft); color: #3a2a7a; }
+.chip-ok { background: var(--leaf-soft); color: #13603b; }
+.chip-warn { background: #fff3cd; color: #7a5600; }
+.chip-bad { background: var(--coral-soft); color: #8a1f23; }
+.chip-muted { background: #eef1f5; color: var(--ink-soft); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: end; justify-content: space-between; margin-bottom: 1rem; }
+.muted { color: var(--ink-soft); }
+.stack { display: grid; gap: 1rem; }
+.grid-2 { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+
+/* ---------- Cuaderno doble línea (elemento distintivo) ---------- */
+.notebook {
+  --line-gap: 2.6em;
+  position: relative; background-color: #fff; border-radius: var(--r-md);
+  padding: 1.2em 1.4em 1.2em 3.2em; box-shadow: 0 1px 0 var(--line), 0 12px 30px -18px rgba(31, 42, 68, 0.35);
+  background-image:
+    linear-gradient(to right, transparent 2.2em, var(--margin) 2.2em, var(--margin) calc(2.2em + 2px), transparent calc(2.2em + 2px)),
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--line-gap) - 1px), var(--rule) calc(var(--line-gap) - 1px), var(--rule) var(--line-gap)),
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--line-gap) * 0.45), var(--rule-faint) calc(var(--line-gap) * 0.45), var(--rule-faint) calc(var(--line-gap) * 0.45 + 1px), transparent calc(var(--line-gap) * 0.45 + 1px), transparent var(--line-gap));
+  background-position: 0 0, 0 1.2em, 0 1.2em;
+  line-height: var(--line-gap);
+}
+
+/* ---------- Páginas ---------- */
+.page { max-width: 1120px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+.empty { text-align: center; padding: 2.5rem 1rem; color: var(--ink-soft); }
+.spinner { width: 40px; height: 40px; border-radius: 50%; border: 4px solid var(--rule-faint); border-top-color: var(--grape);
+  animation: spin 0.8s linear infinite; margin: 2rem auto; }
+@keyframes spin { to { transform: rotate(360deg); } }

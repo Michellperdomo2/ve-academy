@@ -1,0 +1,90 @@
+# V&E Academy — orquestación completa: PostgreSQL + FastAPI + Angular (nginx)
+#   docker compose up --build
+name: ve-academy
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ve_academy}
+      POSTGRES_USER: ${POSTGRES_USER:-ve_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}
+      TZ: ${TZ:-America/Bogota}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    # Solo accesible desde este equipo (pgAdmin, DBeaver, psql), nunca desde la red.
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [ve-net]
+
+  backend:
+    build:
+      context: ./backend
+      args:
+        INSTALL_DEV: ${BACKEND_INSTALL_DEV:-true}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ve_user}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-ve_academy}
+      TEST_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ve_user}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-ve_academy}_test
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Define JWT_SECRET_KEY en .env}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-120}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:4200}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4200}
+      SEED_CONTENT: ${SEED_CONTENT:-true}
+      SEED_DEMO_USERS: ${SEED_DEMO_USERS:-false}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      AI_COMPANION_ENABLED: "false"
+      TZ: ${TZ:-America/Bogota}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    networks: [ve-net]
+
+  frontend:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-4200}:80"
+    networks: [ve-net]
+
+  # Opcional: docker compose --profile tools up -d pgadmin  ->  http://localhost:5050
+  pgadmin:
+    image: dpage/pgadmin4:8
+    profiles: ["tools"]
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-cambia-esta-clave}
+    ports:
+      - "127.0.0.1:5050:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [ve-net]
+
+volumes:
+  pgdata:
+
+networks:
+  ve-net:
+    driver: bridge

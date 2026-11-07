@@ -1,0 +1,29 @@
+# Secretos
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+coverage/
+
+# Pruebas E2E
+e2e/screenshots/
+
+# Sistema / editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
